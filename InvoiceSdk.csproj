@@ -4,14 +4,21 @@
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <PackageId>Tax.Invoice</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>yuejianghe</Authors>
     <Company>yuejianghe</Company>
     <Description>用于处理发票、电子发票、数电发票和全电发票的C# SDK，支持开票、验真和API集成。C# SDK for Electronic Invoices, Digital Invoices (数电票), and Full-Electronic Invoices (全电票), with APIs for issuance, validation, and integration.</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/fapiaoapi/invoice-sdk-csharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fapiaoapi/invoice-sdk-csharp</RepositoryUrl>
-    <PackageTags>invoice;fapiao;api;tax;vat;china</PackageTags>
+    <PackageTags>invoice;fapiao;api;sdk;tax;vat;china</PackageTags>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="obj\**\*.cs" />
+    <Compile Remove="bin\**\*.cs" />
+    <Compile Remove="TaxInvoiceTest\**\*.cs" />
+  </ItemGroup>
 </Project>

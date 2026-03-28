@@ -45,7 +45,7 @@ public sealed class ApiResponse<T>
         var response = FromJson<JsonElement>(json);
         if (!response.IsSuccess || response.Data.ValueKind == JsonValueKind.Undefined)
         {
-            return BuildErrorResponse<List<Dictionary<string, object?>>>(ExtractErrorMessage(json));
+            return BuildErrorResponse<List<Dictionary<string, object?>>>(response.Code, response.Msg, json, response.Total);
         }
 
         var list = new List<Dictionary<string, object?>>();
@@ -77,7 +77,7 @@ public sealed class ApiResponse<T>
     {
         if (!response.IsSuccess || response.Data.ValueKind == JsonValueKind.Undefined)
         {
-            return BuildErrorResponse<Dictionary<string, object?>>(ExtractErrorMessage(json));
+            return BuildErrorResponse<Dictionary<string, object?>>(response.Code, response.Msg, json, response.Total);
         }
 
         var data = response.Data.ValueKind == JsonValueKind.Object
@@ -151,6 +151,18 @@ public sealed class ApiResponse<T>
             Code = -1,
             Msg = message,
             Data = default
+        };
+    }
+
+    private static ApiResponse<TData> BuildErrorResponse<TData>(int code, string? message, string json, int total)
+    {
+        var resolvedMessage = string.IsNullOrWhiteSpace(message) ? ExtractErrorMessage(json) : message;
+        return new ApiResponse<TData>
+        {
+            Code = code,
+            Msg = resolvedMessage,
+            Data = default,
+            Total = total
         };
     }
 }
