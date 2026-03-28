@@ -32,7 +32,7 @@
 
 ### NuGet
 ```bash
-dotnet add package Tax.Invoice --version 1.0.1
+dotnet add package Tax.Invoice --version 1.0.2
 ```
 
 [📦 查看NuGet最新版本](https://www.nuget.org/packages/Tax.Invoice)
