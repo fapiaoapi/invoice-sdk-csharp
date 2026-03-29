@@ -45,6 +45,16 @@ dotnet add package Tax.Invoice --version 1.0.4
 
 ---
 
+其他版本请用旧版本
+
+[C#8-C#11开发票demo](https://github.com/fapiaoapi/invoice-sdk-csharp/blob/master/Example/BasicExample.cs "C#8-C#11开发票demo")
+
+[C#8-C#11红冲发票demo](https://github.com/fapiaoapi/invoice-sdk-csharp/blob/master/Example/RedInvoiceExample.cs "C#8-C#11红冲发票demo")
+
+[C#8-C#11发票税额demo](https://github.com/fapiaoapi/invoice-sdk-csharp/blob/master/Example/TaxExample.cs "C#8-C#11发票税额demo")
+
+---
+
 ## 🔍 为什么选择此SDK？
 - **精准覆盖中国数电发票标准** - 严格遵循国家最新接口规范
 - **开箱即用** - 无需处理XML/签名等底层细节，专注业务逻辑
