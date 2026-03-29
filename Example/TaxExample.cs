@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Tax.Invoice.Util;
 
-namespace Tax.Invoice.Example;
-
-public static class TaxExample
+public class TaxExample
 {
-    public static void Run()
+    public static void Main(string[] args)
     {
-        // 设置标准输出流编码为 UTF-8
+              // 设置标准输出流编码为 UTF-8
         Console.OutputEncoding = Encoding.UTF8;
 
         /**
@@ -108,10 +108,10 @@ public static class TaxExample
          *  价税合计 =合计金额+合计税额 jshj = hjje + hjse
          * @link https://fa-piao.com/fapiao.html?action=data9&source=github
          */
-        TaxFreeExample();
+        TaxFreeExample();  
     }
 
-    /**
+     /**
      * 含税计算示例1 - 无价格无数量
      */
     public static void Example1()
@@ -592,4 +592,5 @@ public static class TaxExample
             return sb.ToString();
         }
     }
+       
 }

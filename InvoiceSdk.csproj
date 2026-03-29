@@ -19,6 +19,5 @@
   <ItemGroup>
     <Compile Remove="obj\**\*.cs" />
     <Compile Remove="bin\**\*.cs" />
-    <Compile Remove="TaxInvoiceTest\**\*.cs" />
   </ItemGroup>
 </Project>

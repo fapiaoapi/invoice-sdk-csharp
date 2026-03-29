@@ -1,77 +1,57 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
+using Tax.Invoice;
+using System.Text.Json;
+using StackExchange.Redis;
+using QRCoder;
+using System.Drawing;
 
-namespace Tax.Invoice.Example;
-
-public static class BasicExample
+public class BasicExample
 {
-    public static void Run()
+
+    public static void Main(string[] args)
     {
-        // 显式设置 System.out 的编码为 UTF-8
-        Console.OutputEncoding = Encoding.UTF8;
-
-        // 配置信息
-        var appKey = "";
-        var appSecret = "";
-
-        // 统一社会信用代码
-        var nsrsbh = "91500112MADFAXXXX";
-        // 名称（营业执照）
-        var title = "XXXX科技有限公司";
-        // 手机号码（电子税务局）
-        var username = "1325580XXXX";
-        // 个人用户密码（电子税务局）
-        var password = "123456XXXX";
-        var fphm = "";
-        var kprq = "";
-        var token = "";
-        var type = "6";
-        // 6 基础 7 标准
-
-        var redis = new Dictionary<string, string>();
-        // Redis配置
-        /*
-          <dependency>
-              <groupId>redis.clients</groupId>
-              <artifactId>jedis</artifactId>
-              <version>3.9.0</version>
-          </dependency>
-         */
-
-        var client = new InvoiceClient(appKey, appSecret);
-        // 创建客户端
-
-        var redisKey = nsrsbh + "@" + username + "@TOKEN";
-        // 从Redis获取Token
-        if (redis.TryGetValue(redisKey, out var cachedToken) && !string.IsNullOrWhiteSpace(cachedToken))
+        try
         {
-            token = cachedToken;
-            client.SetAuthorization(token);
-            Console.WriteLine("Token From Redis: ");
-        }
-        else
-        {
-            var authResponse = client.GetAuthorization(nsrsbh, type);
-            // 一 获取授权
-            /*
-             * 获取授权Token文档
-             * @see https://fa-piao.com/doc.html#api1?source=github
-             */
-            if (authResponse.IsSuccess && authResponse.Data?.Token is { Length: > 0 })
+            var appKey = "";
+            var appSecret = "";
+            var nsrsbh = ""; //统一社会信用代码
+            var title = ""; //名称（营业执照）
+            var username = ""; //手机号码（电子税务局）
+            var password = ""; //个人用户密码（电子税务局）
+            var type = "6";
+
+            var fphm = "";
+            var kprq = "";
+            var token = "";
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine("dotnet " + Environment.Version);
+            var client = new InvoiceClient(appKey, appSecret);
+
+            // dotnet add package StackExchange.Redis
+            // 从Redis获取token
+            var redis = LazyConnection.Connect("127.0.0.1:6379,password=test123456,abortConnect=false");
+            var redisService = redis.GetDatabase();
+            var key = nsrsbh + "@" + username + "@TOKEN";
+            token = redisService.StringGet(key);
+            if (token != null)
             {
-                token = authResponse.Data.Token;
                 client.SetAuthorization(token);
-                redis[redisKey] = token;
-                Console.WriteLine("授权成功，Token: " + token);
+                Console.WriteLine("从Redis获取token成功");
             }
             else
             {
-                Console.WriteLine("授权失败: " + authResponse.Msg);
-                return;
+                var authResponse = client.GetAuthorization(nsrsbh, type);
+                // var authResponse = client.GetAuthorization(nsrsbh, type, username, password);
+                if (authResponse.IsSuccess)
+                {
+                    token = authResponse.Data.Token;
+                    client.SetAuthorization(token);
+                    redisService.StringSet(key, token, TimeSpan.FromDays(30));
+                }
             }
-        }
 
-        try
-        {
             var invoiceParams = new Dictionary<string, object?>
             /*
              * 前端模拟数电发票/电子发票开具 (蓝字发票)
@@ -94,10 +74,10 @@ public static class BasicExample
                 ["jshj"] = 400,
                 ["kplx"] = 0,
                 ["username"] = username,
-                ["xhdwdzdh"] = "重庆市渝北区龙溪街道丽园路2号XXXX 1325580XXXX",
+                ["xhdwdzdh"] = "重庆市渝北区龙溪街道丽园路xxx 1325580xxxx",
                 ["xhdwmc"] = title,
                 ["xhdwsbh"] = nsrsbh,
-                ["xhdwyhzh"] = "工商银行XXXX 15451211XXXX",
+                ["xhdwyhzh"] = "工商银行xxx 15451211xxx",
                 ["zsfs"] = 0,
                 ["fyxm[0][fphxz]"] = 0,
                 ["fyxm[0][spmc]"] = "*软件维护服务*接口服务费",
@@ -145,6 +125,11 @@ public static class BasicExample
                     Console.WriteLine("开票日期: " + kprq);
 
                     // 三 下载发票
+                    /*
+                     * 获取销项数电版式文件
+                     * @see https://fa-piao.com/doc.html#api7?source=github
+                     *
+                     */
                     var pdfParams = new Dictionary<string, object?>
                     {
                         ["downflag"] = "4",
@@ -158,7 +143,10 @@ public static class BasicExample
                     if (pdfResponse.IsSuccess)
                     {
                         Console.WriteLine("发票下载成功");
-                        Console.WriteLine(pdfResponse.Data);
+                        Console.WriteLine(JsonSerializer.Serialize(pdfResponse.Data, new JsonSerializerOptions
+                        {
+                            WriteIndented = true
+                        }));
                     }
                     break;
                 case 420:
@@ -183,11 +171,14 @@ public static class BasicExample
                      * @see https://fa-piao.com/doc.html#api2?source=github
                      */
                     Console.WriteLine("请输入验证码");
-                    var smsCode = "";
+                    var smsCode = "764621";
                     var loginResponse2 = client.LoginDppt(nsrsbh, username, password, smsCode);
                     if (loginResponse2.Code == 200)
                     {
-                        Console.WriteLine(loginResponse2.Data);
+                        Console.WriteLine(JsonSerializer.Serialize(loginResponse2.Data, new JsonSerializerOptions
+                        {
+                            WriteIndented = true
+                        }));
                         Console.WriteLine("验证成功");
                     }
                     break;
@@ -213,21 +204,18 @@ public static class BasicExample
                     var ewmObj = qrData.GetValueOrDefault("ewm");
                     if (ewmObj != null && ewmObj.ToString()?.Length < 500)
                     {
-                        /*
-                           <dependency>
-                               <groupId>com.google.zxing</groupId>
-                               <artifactId>core</artifactId>
-                               <version>3.5.3</version>
-                           </dependency>
-                           <dependency>
-                               <groupId>com.google.zxing</groupId>
-                               <artifactId>javase</artifactId>
-                               <version>3.5.3</version>
-                           </dependency>
-                         */
-                        var base64 = ToBase64(ewmObj.ToString() ?? "", 300);
+                        // 生成二维码图片base64字符串
+                        Console.WriteLine("生成二维码图片base64字符串");
+                        //dotnet add package QRCoder
+                        //dotnet add package System.Drawing.Common
+                        using var generator = new QRCodeGenerator();
+                        using var qrCodeData = generator.CreateQrCode(ewmObj.ToString(), QRCodeGenerator.ECCLevel.Q);
+                        using var qrCode = new PngByteQRCode(qrCodeData); // 使用 PngByte 效率更高
+                        byte[] pngBytes = qrCode.GetGraphic(20); // 20 是每个像素的大小(像素密度)
+                        string base64 = Convert.ToBase64String(pngBytes);
                         qrData["ewm"] = base64;
-                        Console.WriteLine("data:image/png;base64," + base64);
+                        Console.WriteLine("二维码生成成功！");
+                        //前端使用示例: <img src='data:image/png;base64,{base64}' width='200' />
                     }
 
                     // 2. 认证完成后获取人脸二维码认证状态
@@ -256,17 +244,32 @@ public static class BasicExample
                     Console.WriteLine(invoiceResponse.Code + " " + invoiceResponse.Msg);
                     break;
             }
+
+
         }
         catch (Exception e)
         {
-            // 处理开票异常
-            Console.WriteLine("错误: " + e.Message);
+            Console.WriteLine("请求异常：" + e.Message);
+            Console.WriteLine(e);
         }
     }
 
-    // 生成二维码（示例）
-    public static string ToBase64(string text, int size)
+
+
+}
+
+public static class LazyConnection
+{
+    private static Lazy<ConnectionMultiplexer> _lazy;
+    private static string _connectionString;
+
+    public static ConnectionMultiplexer Connect(string connectionString)
     {
-        return Convert.ToBase64String(Encoding.UTF8.GetBytes(text));
+        if (_lazy == null || _connectionString != connectionString)
+        {
+            _connectionString = connectionString;
+            _lazy = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(connectionString));
+        }
+        return _lazy.Value;
     }
 }
