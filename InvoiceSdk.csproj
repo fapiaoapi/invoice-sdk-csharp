@@ -7,7 +7,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <PackageId>Tax.Invoice</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>yuejianghe</Authors>
     <Company>yuejianghe</Company>
     <Description>用于处理发票、电子发票、数电发票和全电发票的C# SDK，支持开票、验真和API集成。C# SDK for Electronic Invoices, Digital Invoices (数电票), and Full-Electronic Invoices (全电票), with APIs for issuance, validation, and integration.</Description>
@@ -20,5 +20,6 @@
   <ItemGroup>
     <Compile Remove="obj\**\*.cs" />
     <Compile Remove="bin\**\*.cs" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

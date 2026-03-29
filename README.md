@@ -32,7 +32,7 @@
 
 ### NuGet
 ```bash
-dotnet add package Tax.Invoice --version 1.0.3
+dotnet add package Tax.Invoice --version 1.0.4
 ```
 
 [📦 查看NuGet最新版本](https://www.nuget.org/packages/Tax.Invoice)
@@ -73,7 +73,7 @@ dotnet add package Tax.Invoice --version 1.0.3
 
 ---
 
-## 🎯 快速开始：5分钟开出一张数电发票
+## 🎯 快速开始：
 
 ```csharp
 using System;
