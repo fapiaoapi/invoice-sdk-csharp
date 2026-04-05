@@ -16,11 +16,11 @@ public class RedInvoiceExample
             var appSecret = "";
             var nsrsbh = "";
             var username = "";
-            var password = "";
+            // var password = "";
             var type = "7";
-            var title = "";
+            // var title = "";
             var fphm = "26502000000569538151";
-            var kprq = "";
+            // var kprq = "";
             var token = "";
 
             Console.OutputEncoding = Encoding.UTF8;
@@ -41,7 +41,7 @@ public class RedInvoiceExample
                * 1. 数电申请红字前查蓝票信息接口
                * @link https://fa-piao.com/doc.html#api8?source=github
                */
-            var queryInvoiceParams = new Dictionary<string, object?>
+            var queryInvoiceParams = new Dictionary<string, object>
             {
                 ["nsrsbh"] = nsrsbh,
                 ["fphm"] = fphm,
@@ -58,7 +58,7 @@ public class RedInvoiceExample
                  * 2. 申请红字信息表
                  * @link https://fa-piao.com/doc.html#api9?source=github
                  */
-                var applyRedParams = new Dictionary<string, object?>
+                var applyRedParams = new Dictionary<string, object>
                 {
                     ["xhdwsbh"] = nsrsbh,
                     ["yfphm"] = fphm,
@@ -76,7 +76,7 @@ public class RedInvoiceExample
                      * 3. 开具红字发票
                      * @link https://fa-piao.com/doc.html#api10?source=github
                      */
-                    var redInvoiceParams = new Dictionary<string, object?>
+                    var redInvoiceParams = new Dictionary<string, object>
                     {
                         ["fpqqlsh"] = "red" + fphm,
                         ["username"] = username,

@@ -10,8 +10,8 @@ public sealed class InvoiceClient
     private readonly InvoiceHttpClient _httpClient;
     private string? _authorization;
 
-    public InvoiceClient(string appKey, string appSecret)
-        : this(new InvoiceConfig(appKey, appSecret))
+    public InvoiceClient(string appKey, string appSecret, bool debug = false)
+        : this(new InvoiceConfig(appKey, appSecret, debug))
     {
     }
 

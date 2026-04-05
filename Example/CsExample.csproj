@@ -2,21 +2,23 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
+    <UseAppHost>false</UseAppHost>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <LangVersion>12.0</LangVersion>
-    <StartupObject>CsExample</StartupObject>
+    <StartupObject>InputExample</StartupObject>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TaxExample.cs" />
     <Compile Include="BasicExample.cs" />
     <Compile Include="RedInvoiceExample.cs" />
+    <Compile Include="InputExample.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="QRCoder" Version="1.7.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
     <PackageReference Include="StackExchange.Redis" Version="2.12.8" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
-    <PackageReference Include="Tax.Invoice" Version="1.0.2" />
+    <PackageReference Include="Tax.Invoice" Version="1.0.7" />
   </ItemGroup>
 </Project>

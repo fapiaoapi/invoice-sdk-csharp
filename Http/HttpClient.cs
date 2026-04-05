@@ -33,9 +33,12 @@ public sealed class HttpClient
         var request = BuildRequest(path, signature, timestamp, randomString, $"multipart/form-data; boundary={boundary}", authorization);
         request.Content = new ByteArrayContent(requestBody);
         request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/form-data; boundary={boundary}");
+        LogRequest(request, method, $"{_config.BaseUrl}{path}", formData);
 
         using var response = _client.Send(request);
-        return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        var responseText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        LogResponse(response.StatusCode, responseText);
+        return responseText;
     }
 
     public string PostJson(string path, Dictionary<string, object?> formData, string? authorization)
@@ -48,9 +51,12 @@ public sealed class HttpClient
 
         var request = BuildRequest(path, signature, timestamp, randomString, "application/json; charset=UTF-8", authorization);
         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+        LogRequest(request, method, $"{_config.BaseUrl}{path}", formData);
 
         using var response = _client.Send(request);
-        return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        var responseText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        LogResponse(response.StatusCode, responseText);
+        return responseText;
     }
 
     public string Get(string path, Dictionary<string, string>? queryParams, string? authorization)
@@ -85,9 +91,12 @@ public sealed class HttpClient
         {
             request.Headers.TryAddWithoutValidation("Authorization", authorization);
         }
+        LogRequest(request, method, urlBuilder.ToString(), queryParams);
 
         using var response = _client.Send(request);
-        return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        var responseText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        LogResponse(response.StatusCode, responseText);
+        return responseText;
     }
 
     private HttpRequestMessage BuildRequest(string path, string signature, string timestamp, string randomString, string contentType, string? authorization)
@@ -149,5 +158,62 @@ public sealed class HttpClient
             return "{}";
         }
         return JsonSerializer.Serialize(data);
+    }
+
+    private void LogRequest(HttpRequestMessage request, string method, string url, object? parameters)
+    {
+        if (!_config.Debug)
+        {
+            return;
+        }
+
+        Console.WriteLine("[InvoiceSDK][Request]");
+        Console.WriteLine("URL: " + url);
+        Console.WriteLine("Method: " + method);
+        Console.WriteLine("Headers:");
+        foreach (var header in request.Headers)
+        {
+            Console.WriteLine($"{header.Key}: {string.Join(",", header.Value)}");
+        }
+        if (request.Content is not null)
+        {
+            foreach (var header in request.Content.Headers)
+            {
+                Console.WriteLine($"{header.Key}: {string.Join(",", header.Value)}");
+            }
+        }
+        Console.WriteLine("Parameters: " + SerializeForLog(parameters));
+    }
+
+    private void LogResponse(HttpStatusCode statusCode, string responseText)
+    {
+        if (!_config.Debug)
+        {
+            return;
+        }
+
+        Console.WriteLine("[InvoiceSDK][Response]");
+        Console.WriteLine("Status Code: " + (int)statusCode);
+        Console.WriteLine("Data: " + responseText);
+    }
+
+    private static string SerializeForLog(object? value)
+    {
+        if (value is null)
+        {
+            return "null";
+        }
+        if (value is string str)
+        {
+            return str;
+        }
+        try
+        {
+            return JsonSerializer.Serialize(value);
+        }
+        catch
+        {
+            return value.ToString() ?? string.Empty;
+        }
     }
 }
