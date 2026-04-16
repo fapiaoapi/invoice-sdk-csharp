@@ -17,7 +17,8 @@ public sealed class HttpClient
         _config = config;
         _client = new System.Net.Http.HttpClient
         {
-            DefaultRequestVersion = HttpVersion.Version20
+            DefaultRequestVersion = HttpVersion.Version20,
+            Timeout = TimeSpan.FromSeconds(150)
         };
     }
 
