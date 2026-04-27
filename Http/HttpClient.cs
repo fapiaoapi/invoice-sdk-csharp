@@ -28,7 +28,7 @@ public sealed class HttpClient
         var randomString = SignatureUtil.GenerateRandomString(20);
         var timestamp = SignatureUtil.GetCurrentTimestamp();
         var signature = SignatureUtil.CalculateSignature(method, path, randomString, timestamp, _config.AppKey, _config.AppSecret);
-        var boundary = "----CsInvoiceBoundary" + SignatureUtil.GenerateRandomString(20);
+        var boundary = "----Cs" + SignatureUtil.GenerateRandomString(20);
         var requestBody = BuildMultipartBody(formData, boundary);
 
         var request = BuildRequest(path, signature, timestamp, randomString, $"multipart/form-data; boundary={boundary}", authorization);
@@ -88,6 +88,7 @@ public sealed class HttpClient
         request.Headers.TryAddWithoutValidation("TimeStamp", timestamp);
         request.Headers.TryAddWithoutValidation("RandomString", randomString);
         request.Headers.TryAddWithoutValidation("Accept-Charset", "UTF-8");
+        request.Headers.TryAddWithoutValidation("Sdk", "Cs109");
         if (!string.IsNullOrWhiteSpace(authorization))
         {
             request.Headers.TryAddWithoutValidation("Authorization", authorization);
@@ -108,6 +109,7 @@ public sealed class HttpClient
         request.Headers.TryAddWithoutValidation("TimeStamp", timestamp);
         request.Headers.TryAddWithoutValidation("RandomString", randomString);
         request.Headers.TryAddWithoutValidation("Accept-Charset", "UTF-8");
+        request.Headers.TryAddWithoutValidation("Sdk", "Cs109");
         if (!string.IsNullOrWhiteSpace(authorization))
         {
             request.Headers.TryAddWithoutValidation("Authorization", authorization);
