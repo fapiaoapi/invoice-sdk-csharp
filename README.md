@@ -373,7 +373,7 @@ public class BasicExample
         /*
          *
          * 开票税额计算demo
-         * @see https://github.com/fapiaoapi/invoice-sdk-java/blob/master/examples/TaxExample.java
+         * @see https://github.com/fapiaoapi/invoice-sdk-csharp/blob/main/Example/TaxExample.cs
         */
         // 开具蓝票参数
         var invoiceParams = new Dictionary<string, object>

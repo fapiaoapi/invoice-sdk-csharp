@@ -53,7 +53,7 @@ public class BasicExample
             {
                 case 200:
                     // 三 下载发票
-                    DownloadPdfOfdXml(invoiceResponse.Data["fphm"].ToString(), invoiceResponse.Data["kprq"].ToString());
+                    DownloadPdfOfdXml(invoiceResponse.Data["Fphm"].ToString(), invoiceResponse.Data["Kprq"].ToString());
                     break;
                 case 420:
                     Console.WriteLine("登录(短信认证)");
@@ -88,7 +88,7 @@ public class BasicExample
                                 invoiceResponse = BlueTicket();
                                 if (invoiceResponse.Code == 200)
                                 {
-                                    DownloadPdfOfdXml(invoiceResponse.Data["fphm"].ToString(), invoiceResponse.Data["kprq"].ToString());
+                                    DownloadPdfOfdXml(invoiceResponse.Data["Fphm"].ToString(), invoiceResponse.Data["Kprq"].ToString());
                                 }
                                 else
                                 {
@@ -163,7 +163,7 @@ public class BasicExample
                                 invoiceResponse = BlueTicket();
                                 if (invoiceResponse.Code == 200)
                                 {
-                                    DownloadPdfOfdXml(invoiceResponse.Data["fphm"].ToString(), invoiceResponse.Data["kprq"].ToString());
+                                    DownloadPdfOfdXml(invoiceResponse.Data["Fphm"].ToString(), invoiceResponse.Data["Kprq"].ToString());
                                 }
                                 else
                                 {
@@ -196,7 +196,7 @@ public class BasicExample
                     invoiceResponse = BlueTicket();
                     if (invoiceResponse.Code == 200)
                     {
-                        DownloadPdfOfdXml(invoiceResponse.Data["fphm"].ToString(), invoiceResponse.Data["kprq"].ToString());
+                        DownloadPdfOfdXml(invoiceResponse.Data["Fphm"].ToString(), invoiceResponse.Data["Kprq"].ToString());
                     }
                     else
                     {
@@ -267,7 +267,7 @@ public class BasicExample
             ["nsrsbh"] = nsrsbh,
             ["username"] = username,
             ["fphm"] = fphm,
-            ["Kprq"] = kprq
+            ["kprq"] = kprq
         };
 
         var pdfResponse = client.GetPdfOfdXml(pdfParams);
@@ -285,7 +285,7 @@ public class BasicExample
         /*
          *
          * 开票税额计算demo
-         * @see https://github.com/fapiaoapi/invoice-sdk-java/blob/master/examples/TaxExample.java
+         * @see https://github.com/fapiaoapi/invoice-sdk-csharp/blob/master/Example/BasicExample.cs
         */
         // 开具蓝票参数
         var invoiceParams = new Dictionary<string, object>
@@ -304,7 +304,7 @@ public class BasicExample
             ["xhdwyhzh"] = xhdwyhzh,
             ["zsfs"] = 0,
             ["fyxm[0][fphxz]"] = 0,
-            ["fyxm[0][spmc]"] = "*软件维护服务*接口服务费",
+            ["fyxm[0][spmc]"] = "*生产生活服务*接口服务费",
             ["fyxm[0][ggxh]"] = "",
             ["fyxm[0][dw]"] = "次",
             ["fyxm[0][spsl]"] = 100,
@@ -315,7 +315,7 @@ public class BasicExample
             ["fyxm[0][hsbz]"] = 1,
             ["fyxm[0][spbm]"] = "3040201030000000000",
             ["fyxm[1][fphxz]"] = 0,
-            ["fyxm[1][spmc]"] = "*软件维护服务*接口服务费",
+            ["fyxm[1][spmc]"] = "*生产生活服务*接口服务费",
             ["fyxm[1][ggxh]"] = "",
             ["fyxm[1][spsl]"] = 150,
             ["fyxm[1][dj]"] = 2,
